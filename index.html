@@ -162,15 +162,28 @@
       const triggered = distressKeywords.some(word => msg.includes(word));
 
       if (triggered) {
-        displayMessage("Don't worry, you're not alone. A real person is reviewing this now. Estimated wait: 3 minutes.");
-        displayMessage("✅ Agent connected: Anna – Scam Specialist");
-        callbackOptions.style.display = 'block';
+        setTimeout(() => {
+          displayMessage("Don't worry, you're not alone. A real person is reviewing this now. Estimated wait: 3 minutes.");
+        }, 600);
+        setTimeout(() => {
+          displayMessage("✅ Agent connected: Anna – Scam Specialist");
+          callbackOptions.style.display = 'block';
+        }, 1800);
+        setTimeout(() => {
+          displayMessage("Anna: Can you please describe what happened in a few words?");
+        }, 3200);
       } else {
-        displayMessage("Thanks for your message. A support agent will respond soon.");
-      }
-
-      if (msg.includes("chargeback")) {
-        displayMessage('🛈 Tip: A chargeback is when a transaction is reversed due to a reported issue with a payment.');
+        setTimeout(() => {
+          displayMessage("Thanks for your message. A support agent will respond soon.");
+        }, 800);
+        if (msg.includes("chargeback")) {
+          setTimeout(() => {
+            displayMessage('🛈 Tip: A chargeback is when a transaction is reversed due to a reported issue with a payment.');
+          }, 1800);
+        }
+        setTimeout(() => {
+          displayMessage("Is there anything else I can help you with today?");
+        }, 3000);
       }
     }
 
