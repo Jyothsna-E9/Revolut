@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Revolut Trust Layer – Alpha Prototype</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f8fa;
+      color: #1a1a1a;
+      font-size: 18px;
+      line-height: 1.6;
+      padding: 20px;
+      max-width: 800px;
+      margin: auto;
+    }
+
+    #chat-box {
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 20px;
+      height: 400px;
+      overflow-y: auto;
+      margin-bottom: 10px;
+    }
+
+    .message {
+      margin: 10px 0;
+    }
+
+    .user {
+      text-align: right;
+      color: #0a7cff;
+    }
+
+    .bot {
+      text-align: left;
+      color: #333;
+    }
+
+    input, button, select {
+      padding: 10px;
+      font-size: 16px;
+      margin-top: 5px;
+    }
+
+    #input-box {
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .calm-mode {
+      background-color: #f0f6ff;
+    }
+
+    .highlight {
+      font-weight: bold;
+      color: green;
+    }
+
+    #callback-options {
+      display: none;
+      margin-top: 10px;
+    }
+
+    #speak-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #0a7cff;
+      color: white;
+      padding: 14px 18px;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .tooltip {
+      display: inline-block;
+      border-bottom: 1px dotted black;
+      position: relative;
+      cursor: help;
+    }
+
+    .tooltip:hover::after {
+      content: attr(data-tip);
+      position: absolute;
+      left: 0;
+      bottom: -24px;
+      background: #000;
+      color: #fff;
+      padding: 6px;
+      border-radius: 4px;
+      white-space: nowrap;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body class="calm-mode">
+  <h2>Revolut Support – Human Trust Layer</h2>
+
+  <div id="chat-box"></div>
+
+  <form onsubmit="handleMessage(event)">
+    <input type="text" id="input-box" placeholder="Type your message…" autocomplete="off" />
+  </form>
+
+  <div id="callback-options">
+    <p>Would you prefer a call?</p>
+    <button onclick="respond('Call me now')">📞 Call Me Now</button>
+    <button onclick="respond('Schedule callback')">📅 Schedule a Callback</button>
+    <select id="schedule-time">
+      <option value="10:00 AM">10:00 AM</option>
+      <option value="11:30 AM">11:30 AM</option>
+      <option value="2:00 PM">2:00 PM</option>
+    </select>
+  </div>
+
+  <button id="speak-btn" onclick="connectToHuman()">💬 Speak to a Human</button>
+
+  <script>
+    const chatBox = document.getElementById('chat-box');
+    const inputBox = document.getElementById('input-box');
+    const callbackOptions = document.getElementById('callback-options');
+    const scheduleSelect = document.getElementById('schedule-time');
+
+    const distressKeywords = ['scam', 'fraud', 'panic', 'stolen'];
+
+    function loadChat() {
+      const history = JSON.parse(localStorage.getItem('chatHistory')) || [];
+      history.forEach(msg => displayMessage(msg.text, msg.sender));
+    }
+
+    function saveMessage(text, sender) {
+      const history = JSON.parse(localStorage.getItem('chatHistory')) || [];
+      history.push({ text, sender });
+      localStorage.setItem('chatHistory', JSON.stringify(history));
+    }
+
+    function displayMessage(message, sender = 'bot') {
+      const msgDiv = document.createElement('div');
+      msgDiv.className = `message ${sender}`;
+      msgDiv.textContent = message;
+      chatBox.appendChild(msgDiv);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function handleMessage(e) {
+      e.preventDefault();
+      const msg = inputBox.value.trim();
+      if (!msg) return;
+
+      displayMessage(msg, 'user');
+      saveMessage(msg, 'user');
+      inputBox.value = '';
+      processInput(msg.toLowerCase());
+    }
+
+    function processInput(msg) {
+      const triggered = distressKeywords.some(word => msg.includes(word));
+
+      if (triggered) {
+        displayMessage("Don't worry, you're not alone. A real person is reviewing this now. Estimated wait: 3 minutes.");
+        displayMessage("✅ Agent connected: Anna – Scam Specialist");
+        callbackOptions.style.display = 'block';
+      } else {
+        displayMessage("Thanks for your message. A support agent will respond soon.");
+      }
+
+      if (msg.includes("chargeback")) {
+        displayMessage('🛈 Tip: A chargeback is when a transaction is reversed due to a reported issue with a payment.');
+      }
+    }
+
+    function respond(type) {
+      if (type === 'Call me now') {
+        displayMessage('📞 Anna will call you shortly...');
+      } else {
+        const time = scheduleSelect.value;
+        displayMessage(`📅 Callback scheduled at ${time}`);
+      }
+    }
+
+    function connectToHuman() {
+      displayMessage("You've been connected to a human agent. Anna will assist you shortly.");
+      callbackOptions.style.display = 'block';
+    }
+
+    loadChat();
+  </script>
+</body>
+</html>
