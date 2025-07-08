@@ -128,17 +128,6 @@
 
     const distressKeywords = ['scam', 'fraud', 'panic', 'stolen'];
 
-    function loadChat() {
-      const history = JSON.parse(localStorage.getItem('chatHistory')) || [];
-      history.forEach(msg => displayMessage(msg.text, msg.sender));
-    }
-
-    function saveMessage(text, sender) {
-      const history = JSON.parse(localStorage.getItem('chatHistory')) || [];
-      history.push({ text, sender });
-      localStorage.setItem('chatHistory', JSON.stringify(history));
-    }
-
     function displayMessage(message, sender = 'bot') {
       const msgDiv = document.createElement('div');
       msgDiv.className = `message ${sender}`;
@@ -153,7 +142,6 @@
       if (!msg) return;
 
       displayMessage(msg, 'user');
-      saveMessage(msg, 'user');
       inputBox.value = '';
       processInput(msg.toLowerCase());
     }
@@ -200,8 +188,6 @@
       displayMessage("You've been connected to a human agent. Anna will assist you shortly.");
       callbackOptions.style.display = 'block';
     }
-
-    loadChat();
   </script>
 </body>
 </html>
